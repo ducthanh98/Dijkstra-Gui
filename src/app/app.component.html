@@ -1,0 +1,32 @@
+<div class="container">
+  <form class="row" #form="ngForm" (ngSubmit)="onSubmit(form)">
+    <div class="col-5">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Số điểm</label>
+        <input type="number" class="form-control" placeholder="Số điểm" [(ngModel)]="input.point" name="point">
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="form-group">
+        <label for="exampleInputPassword1">Số đường</label>
+        <input type="number" class="form-control" placeholder="Số đường" [(ngModel)]="input.line" name="line">
+      </div>
+    </div>
+    <div class="col-1"><button class="btn btn-primary" style="margin-top: 30px;">Tạo</button></div>
+  </form>
+
+  <div class="row">
+    <div class="col-12" *ngIf="isLoading">
+        <ko-stage #stage [config]="configStage">
+          <ko-layer>
+
+            <ko-circle *ngFor="let point of points,let i = index" [config]="configCircle(point)"
+              (click)="handleClick($event)">a</ko-circle>
+            <ko-arrow *ngFor="let line of lines" [config]="configLine(line)" (click)="handleClick($event)"></ko-arrow>
+            <ko-text *ngFor="let point of points,let i = index" [config]="configText(point,i)"></ko-text>
+          </ko-layer>
+        </ko-stage>
+      <br>
+    </div>
+  </div>
+</div>
