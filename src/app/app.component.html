@@ -12,20 +12,30 @@
         <input type="number" class="form-control" placeholder="Số đường" [(ngModel)]="input.line" name="line">
       </div>
     </div>
-    <div class="col-1"><button class="btn btn-primary" style="margin-top: 30px;">Tạo</button></div>
+    <div class="col-1"><button type="submit" class="btn btn-primary" style="margin-top: 30px;">Tạo</button></div>
+    <div class="col-1"><button type="button" (click)="findPath()" class="btn btn-primary"
+        style="margin-top: 30px;">Tìm</button></div>
   </form>
+  <div class="row">
+    <div class="alert alert-primary w-100" role="alert" *ngIf="result != -1">
+      Path {{selected[0]}} - > {{selected[1]}} : <span *ngIf="result > 0">{{result}}</span>
+    </div>
+    <div class="alert alert-danger w-100" role="alert" *ngIf="result == -1">
+      Path {{selected[0]}} - > {{selected[1]}} : Not found
+    </div>
+  </div>
 
   <div class="row">
-    <div class="col-12" *ngIf="isLoading">
-        <ko-stage #stage [config]="configStage">
-          <ko-layer>
-
-            <ko-circle *ngFor="let point of points,let i = index" [config]="configCircle(point)"
-              (click)="handleClick($event)">a</ko-circle>
-            <ko-arrow *ngFor="let line of lines" [config]="configLine(line)" (click)="handleClick($event)"></ko-arrow>
-            <ko-text *ngFor="let point of points,let i = index" [config]="configText(point,i)"></ko-text>
-          </ko-layer>
-        </ko-stage>
+    <div class="col-12" *ngIf="!isLoading">
+      <ko-stage [config]="configStage">
+        <ko-layer>
+          <ko-circle *ngFor="let point of points,let i = index" [config]="point" (click)="handleClickCircle(i)">
+          </ko-circle>
+          <ko-arrow *ngFor="let line of lines" [config]="line"></ko-arrow>
+          <ko-text *ngFor="let point of textPoint,let i = index" [config]="configTextPoint(point,i)"></ko-text>
+          <ko-text *ngFor="let line of textLength,let i = index" [config]="configTextLength(line,i)"></ko-text>
+        </ko-layer>
+      </ko-stage>
       <br>
     </div>
   </div>

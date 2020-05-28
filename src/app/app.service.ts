@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Point } from '../shared/Point';
 import { Config } from '../shared/Config';
 import { Line } from '../shared/Line';
+import { config } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,14 @@ export class AppService {
   private points: Point[] = [];
   private lines: Line[] = [];
   private matrix = [];
+  private paths = [];
+
 
   constructor() { }
 
+  getPaths() {
+    return this.paths;
+  }
 
   getPoints() {
     return this.points;
@@ -76,28 +82,31 @@ export class AppService {
 
   generateLines(value: { point: number, line: number }) {
 
-
     this.lines = [];
 
     for (let i = 0; i < value.line; i++) {
-
       while (1) {
 
         const x = this.randomValue(value.point - 1);
         const y = this.randomValue(value.point - 1);
 
+        if (x == y) continue;
+
         if (this.matrix[y][x] != 0 && this.matrix[x][y] == 0) {
 
-          this.matrix[x][y] = this.randomValue(10);
-          this.lines.push(new Line(this.points[x], this.points[y]));
+          this.matrix[x][y] = this.matrix[y][x];
+          this.lines.push(new Line(this.points[x], this.points[y], this.matrix[y][x]));
+
 
           break;
-          
-        } else if(this.matrix[x][y] == 0) {
 
-          
-          this.matrix[x][y] = this.matrix[y][x];
-          this.lines.push(new Line(this.points[x], this.points[y]));
+        } else if (this.matrix[x][y] == 0) {
+
+          const value = this.randomValue(10, true);
+
+          this.matrix[x][y] = value;
+          this.lines.push(new Line(this.points[x], this.points[y], value));
+
 
           break;
 
@@ -107,11 +116,109 @@ export class AppService {
       }
 
     }
-    console.log(this.matrix);
 
   }
 
-  private randomValue(value) {
+  dijkstra(numberPoint, start, end) {
+    this.paths = [];
+    let isExist = false;
+    let index= start;
+
+    const back = new Array(numberPoint).fill(-1);
+    const weight = new Array(numberPoint).fill(Number.MAX_VALUE);
+    const visited = new Array(numberPoint).fill(0);
+
+
+    back[start] = 0;
+    weight[start] = 0;
+
+    let connect = -1;
+
+
+    while (1) {
+      connect = -1;
+
+      let min = Number.MAX_VALUE;
+
+      for (let i = 0; i < numberPoint; i++) {
+        if (visited[i] == 0) {
+
+          if (this.matrix[start][i] != 0 && weight[i] > weight[start] + this.matrix[start][i]) {
+
+            weight[i] = weight[start] + this.matrix[start][i];
+            back[i] = start;
+
+          }
+
+          if (min > weight[i]) {
+            min = weight[i];
+            connect = i;
+          }
+
+        }
+
+      }
+
+      start = connect;
+      visited[start] = 1;
+
+      if (start == end) {
+        isExist = true;
+        break;
+      }
+
+      if (connect == -1) {
+        break;
+      }
+    }
+    
+
+    if (isExist) {
+      console.log('end',weight[end])
+
+      this.printPath(index, end, back)
+
+    }
+    return weight[end];
+
+  }
+
+  printPath(start, finish, back) {
+
+    if (start == finish) {
+
+      this.paths.push(finish)
+
+    } else if (finish == -1) {
+      return;
+    }
+    else {
+
+      this.printPath(start, back[finish], back)
+      this.paths.push(finish)
+
+    }
+
+  }
+
+  private randomValue(value, isFloor = false) {
+
+    if (isFloor) {
+
+
+      while (1) {
+
+        const tmp = Math.floor(Math.random() * value);
+
+        if (!tmp) continue;
+
+        return tmp;
+
+      }
+
+
+    }
+
     return Math.round(Math.random() * value);
   }
 }
