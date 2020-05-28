@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { NgForm } from '@angular/forms';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { Point } from '../shared/Point';
 import { Line } from '../shared/Line';
@@ -22,7 +21,7 @@ import { KonvaComponent } from 'ng2-konva';
 })
 
 
-export class AppComponent {
+export class AppComponent implements OnInit {
   @ViewChild('stage', { static: false }) stage: KonvaComponent;
   title = 'Paths';
   isLoading = false;
@@ -34,7 +33,13 @@ export class AppComponent {
   }
 
 
-  constructor(private appService: AppService, private changeDectorRef: ChangeDetectorRef) {
+  constructor(private appService: AppService) {
+  }
+
+  ngOnInit(): void {
+
+
+
   }
 
   public configStage = new BehaviorSubject({
@@ -97,7 +102,12 @@ export class AppComponent {
   onSubmit(form: NgForm) {
     this.isLoading = false;
 
-    this.points = this.appService.generatePoints(form.value.point);
+    this.appService.generatePoints(form.value.point);
+    this.points = this.appService.getPoints();
+
+
+    this.appService.generateLines(form.value);
+    this.lines = this.appService.getLines();
 
     setTimeout(() => {
       this.isLoading = true;
