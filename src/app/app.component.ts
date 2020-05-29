@@ -93,12 +93,21 @@ export class AppComponent implements OnInit {
   }
 
   choosePointToDrawLine(first: number, second: number) {
+    if (first< second && second - first < 3 * Config.radius) {
 
-    if (first < second) {
+      return first;
+
+    }
+    else if (first < second) {
+
       return first + Config.radius;
+
+    } else {
+
+      return first - Config.radius
+
     }
 
-    return first - Config.radius
 
   }
 
@@ -114,8 +123,8 @@ export class AppComponent implements OnInit {
 
   configTextLength(line: Line) {
     const config: TextConfig = {
-      x: (line.start.x + line.end.x) / 2 + 15,
-      y: (line.start.y + line.end.y) / 2 + 15,
+      x: (line.start.x + line.end.x) / 2 + 18,
+      y: (line.start.y + line.end.y) / 2 + 18,
       text: line.length.toString(),
     }
 
@@ -123,6 +132,9 @@ export class AppComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
+    if(form.value.line > 399 || form.value.line < 0 || form.value.point < 0 || form.value.point > 20){
+      return alert('Invalid value')
+    }
     this.result = 0;
     this.selected = [];
     this.isLoading = true;

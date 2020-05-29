@@ -40,6 +40,18 @@ export class AppService {
 
       while (1) {
         const tmp = this.randomValue(Config.width - Config.radius);
+        let sizeError = false;
+
+        for (let j = 0; j < points.length; j++) {
+
+          if(Math.abs(points[j].x - tmp) < 4*Config.radius){
+            sizeError = true;
+            break;
+          }
+
+        }
+
+        if(sizeError) continue;
 
         if (tmp > Config.radius) {
 
@@ -52,6 +64,19 @@ export class AppService {
 
       while (1) {
         const tmp = this.randomValue(Config.height - Config.radius);
+
+        let sizeError = false;
+
+        for (let j = 0; j < points.length; j++) {
+
+          if(Math.abs(points[j].y - tmp) < 4*Config.radius){
+            sizeError = true;
+            break;
+          }
+
+        }
+
+        if(sizeError) continue;
 
         if (tmp > Config.radius) {
 
@@ -67,6 +92,8 @@ export class AppService {
     }
 
     this.points = points;
+    console.log(points);
+    
 
   }
 
@@ -122,7 +149,7 @@ export class AppService {
   dijkstra(numberPoint, start, end) {
     this.paths = [];
     let isExist = false;
-    let index= start;
+    let index = start;
 
     const back = new Array(numberPoint).fill(-1);
     const weight = new Array(numberPoint).fill(Number.MAX_VALUE);
@@ -171,10 +198,10 @@ export class AppService {
         break;
       }
     }
-    
+
 
     if (isExist) {
-      console.log('end',weight[end])
+      console.log('end', weight[end])
 
       this.printPath(index, end, back)
 

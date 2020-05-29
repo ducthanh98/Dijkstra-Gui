@@ -3,13 +3,13 @@
     <div class="col-5">
       <div class="form-group">
         <label for="exampleInputEmail1">Số điểm</label>
-        <input type="number" class="form-control" placeholder="Số điểm" [(ngModel)]="input.point" name="point">
+        <input type="number" min="0" max="20" class="form-control" placeholder="Số điểm" [(ngModel)]="input.point" name="point">
       </div>
     </div>
     <div class="col-5">
       <div class="form-group">
         <label for="exampleInputPassword1">Số đường</label>
-        <input type="number" class="form-control" placeholder="Số đường" [(ngModel)]="input.line" name="line">
+        <input type="number" min="0" max="400" class="form-control" placeholder="Số đường" [(ngModel)]="input.line" name="line">
       </div>
     </div>
     <div class="col-1"><button type="submit" class="btn btn-primary" style="margin-top: 30px;">Tạo</button></div>
